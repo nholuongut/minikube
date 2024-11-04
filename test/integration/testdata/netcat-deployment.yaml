@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: netcat
+  labels:
+    app: netcat
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: netcat
+  template:
+    metadata:
+      labels:
+        app: netcat
+    spec:
+      containers:
+        # dnsutils is easier to debug DNS issues with than the standard busybox image
+        - name: dnsutils
+          # https://github.com/kubernetes/kubernetes/blob/master/test/images/agnhost/README.md
+          image: registry.k8s.io/e2e-test-images/agnhost:2.40
+          imagePullPolicy: IfNotPresent
+          command:
+            ["/bin/sh", "-c", "while true; do echo hello | nc -l -p 8080; done"]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: netcat
+spec:
+  ports:
+    - port: 8080
+  selector:
+    app: netcat

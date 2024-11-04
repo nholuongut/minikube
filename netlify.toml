@@ -1,0 +1,18 @@
+[build]
+base = "site/"
+publish = "site/public/"
+command = "pwd && cd themes/docsy && npm install && git submodule update -f --init && cd ../.. && hugo"
+
+[build.environment]
+NODE_VERSION = "20.18.0"
+HUGO_VERSION = "v0.136.5"
+
+[context.production.environment]
+HUGO_ENV = "production"
+HUGO_BASEURL = "https://minikube.sigs.k8s.io/"
+
+#[context.deploy-preview]
+#command = "hugo --enableGitInfo --buildFuture -b $DEPLOY_PRIME_URL"
+
+#[context.branch-deploy]
+#command = "hugo --enableGitInfo --buildFuture -b $DEPLOY_PRIME_URL"

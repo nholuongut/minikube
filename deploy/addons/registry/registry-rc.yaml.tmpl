@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    kubernetes.io/minikube-addons: registry
+    addonmanager.kubernetes.io/mode: Reconcile
+  name: registry
+  namespace: kube-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      kubernetes.io/minikube-addons: registry
+      addonmanager.kubernetes.io/mode: Reconcile
+  template:
+    metadata:
+      labels:
+        actual-registry: "true"
+        kubernetes.io/minikube-addons: registry
+        addonmanager.kubernetes.io/mode: Reconcile
+    spec:
+      containers:
+      - image: {{.CustomRegistries.Registry  | default .ImageRepository | default .Registries.Registry }}{{.Images.Registry}}
+        imagePullPolicy: IfNotPresent
+        name: registry
+        ports:
+        - containerPort: 5000
+          protocol: TCP
+        env:
+        - name: REGISTRY_STORAGE_DELETE_ENABLED
+          value: "true"
